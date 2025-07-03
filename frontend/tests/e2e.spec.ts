@@ -1,17 +1,29 @@
 import { test, expect } from '@playwright/test';
+import * as fs from 'fs';
+import * as path from 'path';
 
 test('processes time log and displays table', async ({ page }) => {
   // Make sure your frontend dev server is running at this address
   await page.goto('http://localhost:5174');
 
-  // Fill the textarea with a sample time log
-  await page.fill('textarea', 'John Doe\n1 April, 2025\n9:00 – 12:00 → Test Task');
+  // Read the content of appendix1.txt
+  const appendix1Path = path.resolve(__dirname, '../../appendix1.txt');
+  const appendix1Content = fs.readFileSync(appendix1Path, 'utf-8');
 
-  // Click the Process Text button
-  await page.click('text=Process Text');
+  // Fill the textarea with the content of appendix1.txt
+  await page.fill('textarea', appendix1Content);
 
-  // Wait for the table to appear and check for expected content
-  await expect(page.getByText('John Doe')).toBeVisible();
-  await expect(page.getByText('Test Task')).toBeVisible();
-  await expect(page.getByText('Unverified')).toBeVisible();
-}); 
+  // Click the process button
+  await page.click('button:has-text("Process Text")');
+
+  // Wait for the results table to be visible and contain the expected data for Markus Lange
+  await expect(page.getByText('Markus Lange')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByText('1 April, 2025')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByText('9:00')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByText('12:00')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByText('Frontend-Insider-Tool Abstimmung')).toBeVisible({ timeout: 15000 });
+
+  // Check for another employee to be sure
+  await expect(page.getByText('Sabrina König')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByText('GS-Kleinarbeiten')).toBeVisible({ timeout: 15000 });
+});
