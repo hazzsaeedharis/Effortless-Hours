@@ -55,6 +55,11 @@ jobs:
         working-directory: frontend
         run: npx vitest run
 
+      - name: Start frontend server
+        working-directory: frontend
+        run: npm run dev &
+      - name: Wait for server to be ready
+        run: npx wait-on http://localhost:5174
       - name: Run frontend E2E tests (Playwright)
         working-directory: frontend
         run: npx playwright test tests/e2e.spec.ts
