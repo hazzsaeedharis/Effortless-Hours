@@ -41,9 +41,7 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: frontend
-        run: |
-          npm ci
-          npm install --save-dev playwright @playwright/test vitest @testing-library/react @testing-library/jest-dom
+        run: npm ci
 
       - name: Install Playwright browsers
         working-directory: frontend
