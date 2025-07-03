@@ -1,0 +1,54 @@
+Employee,Date,Time,Description,Subtask
+Markus Lange,"1 April, 2025",9:00-12:00,Frontend-Insider-Tool Abstimmung,(ML) - EuP - April'25
+Markus Lange,"1 April, 2025",12:30-17:30,Integration Social Login bei Google,(ML) - EuP - April'25
+Markus Lange,"2 April, 2025",8:30-11:30,TB-Anwendung: Meta-Pixel Integration für Kampagnentracking,(ML) - BuP - April'25
+Markus Lange,"2 April, 2025",12:00-16:00,ÖTB-Anwendung: DSGVO-Update Task,(ML) - BuP - April'25
+Markus Lange,"2 April, 2025",16:00-17:30,Cloud-Ablagestruktur Entwurf,(ML) - BuP - April'25
+Markus Lange,"3 April, 2025",9:00-13:00,GS-Anwendung: Support-Anfrage Klärung Map & Route,(ML) - EuP - April'25
+Markus Lange,"3 April, 2025",13:30-18:00,Figma-Export Konzept,(ML) - EuP - April'25
+Markus Lange,"4 April, 2025",9:00-12:00,Verlagsinfo-Vorbereitung & Abstimmung,(ML) - BuP - April'25
+Markus Lange,"4 April, 2025",13:00-17:00,Pflichtinfo-Umsetzung & Anpassungen abstimmen,(ML) - BuP - April'25
+Markus Lange,"7 April, 2025",9:30-12:00,"Anbindung KI-Support-Tool an Mail-Inbox, Abstimmung im Team",(ML) - EuP - April'25
+Markus Lange,"7 April, 2025",12:30-15:30,Abstimmung im Entwicklerteam bzgl. DDS-Rückfragen,(ML) - EuP - April'25
+Markus Lange,"7 April, 2025",16:00-18:00,Cloud-Ablagestruktur Entwurf,(ML) - BuP - April'25
+Sabrina König,2/4/25,8–10,Support-an-Cloud-Komponente,Ambiguous (requires verification)
+Sabrina König,2/4/25,10:15–11:45,Figma-Export Konzept,(SK) - EuP - April'25
+Sabrina König,2/4/25,12:30–14,DSGVO-Update Task,(SK) - BuP - April'25
+Sabrina König,2/4/25,14:15–16:15,GS-Kleinarbeiten,(SK) - EuP - April'25
+Sabrina König,2/4/25,16:30–18:30,Frontend-Insider-Tool Abstimmung,(SK) - EuP - April'25
+Sabrina König,3/4/25,8–9:30,Verlagsinfo-Vorbereitung & Abstimmung,(SK) - BuP - April'25
+Sabrina König,3/4/25,9:45–12:15,Integration Social Login bei Google,(SK) - EuP - April'25
+Sabrina König,3/4/25,13–15,Board-Meeting Kooperation: Vorgehen mit HR-System & Vertragsgrundlagen,(SK) - BuP - April'25
+Sabrina König,3/4/25,15:15–18,GS-Anwendung: Support-Anfrage Klärung Map & Route,(SK) - BuP - April'25
+Sabrina König,4/4/25,8:30–11,Magazin: Support-an-Cloud-Komponente,(SK) - EuP - April'25
+Sabrina König,4/4/25,11:15–13:45,DSGVO-Update Task,(SK) - BuP - April'25
+Sabrina König,4/4/25,14–16:30,Cloud-Ablagestruktur Entwurf,(SK) - BuP - April'25
+Sabrina König,4/4/25,16:45–18:15,Pflichtinfo-Umsetzung & Anpassungen abstimmen,(SK) - BuP - April'25
+Sabrina König,7/4/25,8–10:30,"KI-Support-Tool Anbindung an Mail-Inbox, Abstimmung im Team",Ambiguous (requires verification)
+Sabrina König,7/4/25,10:45–13:15,Figma-Export Konzept,(SK) - EuP - April'25
+Sabrina König,7/4/25,14–16:30,GS-Kleinarbeiten,(SK) - EuP - April'25
+Sabrina König,7/4/25,16:45–18,Frontend-Insider-Tool Abstimmung,(SK) - EuP - April'25
+Sabrina König,8/4/25,8:15–10:15,TB-Anwendung: Meta-Pixel Integration für Kampagnentracking,(SK) - BuP - April'25
+Sabrina König,8/4/25,10:30–12:30,Verlagsinfo-Vorbereitung & Abstimmung,(SK) - BuP - April'25
+Sabrina König,8/4/25,13:30–16,Cloud-Ablagestruktur Entwurf,(SK) - BuP - April'25
+Sabrina König,8/4/25,16:15–18,Abstimmung im Entwicklerteam bzgl. DDS-Rückfragen,(SK) - BuP - April'25
+Tobias Schmitt,"Donnerstag, 3. April 2025",09:00–12:00,Strategie-Meeting: Unternehmensplanung & Brainstorm,(TS) - BD - April'25
+Tobias Schmitt,"Donnerstag, 3. April 2025",13:00–17:00,Meeting zum Aufgabenüberblick & nächste Schritte mit Partner,(TS) - BD - April'25
+Tobias Schmitt,"Freitag, 4. April 2025",08:30–12:00,Board-Meeting Kooperation: Vorgehen mit HR-System & Vertragsgrundlagen,(TS) - BD - April'25
+Tobias Schmitt,"Freitag, 4. April 2025",13:00–16:30,"KI-Support-Tool Anbindung an Mail-Inbox, Abstimmung im Team",(TS) - BD - April'25
+Tobias Schmitt,"Montag, 7. April 2025",09:00–12:30,Abstimmung im Entwicklerteam bzgl. DDS-Rückfragen,(TS) - BD - April'25
+Tobias Schmitt,"Montag, 7. April 2025",13:30–18:00,Support-an-Cloud-Komponente,(TS) - BD - April'25
+Tobias Schmitt,"Dienstag, 8. April 2025",09:15–12:15,Figma-Export Konzept,(TS) - BD - April'25
+Tobias Schmitt,"Dienstag, 8. April 2025",13:00–16:00,DSGVO-Update Task,(TS) - BD - April'25
+Tobias Schmitt,"Mittwoch, 9. April 2025",08:45–12:15,GS-Kleinarbeiten,(TS) - BD - April'25
+Tobias Schmitt,"Mittwoch, 9. April 2025",13:15–17:15,Pflichtinfo-Umsetzung & Anpassungen abstimmen,(TS) - BD - April'25
+Vanessa Koch,4/4/25,09:00–13:00,Figma-Export Konzept,(VK) - Kom - April'25
+Vanessa Koch,4/4/25,14:00–18:30,Verlagsinfo-Vorbereitung & Abstimmung,Ambiguous (requires verification)
+Vanessa Koch,4/7/25,08:30–12:30,GS-Anwendung: Support-Anfrage Klärung Map & Route,Ambiguous (requires verification)
+Vanessa Koch,4/7/25,13:30–17:30,Pflichtinfo-Umsetzung & Anpassungen abstimmen,(VK) - Kom - April'25
+Vanessa Koch,4/8/25,09:00–13:00,Frontend-Insider-Tool Abstimmung,Ambiguous (requires verification)
+Vanessa Koch,4/8/25,14:00–18:00,Integration Social Login bei Google,Ambiguous (requires verification)
+Vanessa Koch,4/9/25,08:45–12:45,DSGVO-Update Task,Ambiguous (requires verification)
+Vanessa Koch,4/9/25,13:45–17:45,Meta-Pixel Integration für Kampagnentracking,Ambiguous (requires verification)
+Vanessa Koch,4/10/25,09:30–13:30,Cloud-Ablagestruktur Entwurf,(VK) - Kom - April'25
+Vanessa Koch,4/10/25,14:30–18:30,"KI-Support-Tool Anbindung an Mail-Inbox, Abstimmung im Team",Ambiguous (requires verification)
