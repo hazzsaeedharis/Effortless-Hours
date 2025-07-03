@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Container, Typography, Box, Alert } from '@mui/material';
 import TextInputComponent from './components/TextInputComponent';
 import ResultsTableComponent from './components/ResultsTableComponent';
