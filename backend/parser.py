@@ -4,7 +4,27 @@ from datetime import datetime
 def parse_time_log(text: str) -> list:
     """
     Parses a block of text containing time logs for one or more employees.
+    It first attempts to parse a simple, single-entry format, and falls back
+    to a more complex, multi-entry format.
     """
+    # Normalize unicode characters to standard ASCII for simpler regex
+    normalized_text = text.replace('–', '-').replace('→', '->')
+
+    # Regex for a simple, single-entry format (e.g., from tests)
+    simple_pattern = re.compile(
+        r'^\s*(?P<employee>.+?)\s*\n'
+        r'\s*(?P<date>\d{1,2}\s+\w+,\s+\d{4})\s*\n'
+        r'\s*(?P<start_time>\d{1,2}:\d{2})\s*-\s*(?P<end_time>\d{1,2}:\d{2})\s*->\s*(?P<description>.+?)\s*$',
+        re.MULTILINE
+    )
+    
+    match = simple_pattern.match(normalized_text.strip())
+    if match:
+        entry = match.groupdict()
+        entry['status'] = 'Unverified'
+        return [entry]
+
+    # Fallback to the original, more complex parser for other formats
     entries = []
     current_employee = None
     current_date = None
