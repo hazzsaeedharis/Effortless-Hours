@@ -22,11 +22,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
 
-      # Uncomment if you have backend tests
-      # - name: Run backend tests
-      #   run: |
-      #     cd backend
-      #     pytest
+      - name: Run backend tests
+        run: |
+          cd backend
+          pip install pytest httpx
+          pytest
 
   frontend:
     runs-on: ubuntu-latest
@@ -48,8 +48,34 @@ jobs:
           cd frontend
           npm run build
 
-      # Uncomment if you have frontend tests
-      # - name: Run frontend tests
-      #   run: |
-      #     cd frontend
-      #     npm test -- --watchAll=false
+      - name: Install Playwright
+        run: |
+          cd frontend
+          npm install --save-dev playwright @playwright/test
+          npx playwright install
+
+      - name: Install Vitest
+        run: |
+          cd frontend
+          npm install --save-dev vitest @testing-library/react @testing-library/jest-dom
+
+      - name: Run frontend tests
+        run: |
+          cd frontend
+          npm test
+
+      - name: Run E2E tests
+        run: |
+          cd frontend
+          npx playwright test tests/
+
+      - name: Run unit tests
+        run: |
+          cd frontend
+          npx vitest
+
+      - name: Run frontend E2E tests
+        run: |
+          cd frontend
+          npm run test:e2e -- tests/
+

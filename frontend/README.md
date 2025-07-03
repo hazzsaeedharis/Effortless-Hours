@@ -67,3 +67,21 @@ export default tseslint.config([
   },
 ])
 ```
+
+## Testing
+
+### Install dependencies
+```
+npm install --save-dev vitest @testing-library/react @testing-library/jest-dom playwright @playwright/test
+npx playwright install
+```
+
+### Run unit/component tests
+```
+npm test
+```
+
+### Run E2E tests
+```
+npm run test:e2e
+```
