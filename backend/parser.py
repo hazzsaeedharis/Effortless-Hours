@@ -71,28 +71,46 @@ def validate_time(time_str):
     return f"{hour}:{minute:02d}"
 
 def call_openai_llm(text: str) -> list:
-    import openai
-    openai.api_key = OPENAI_API_KEY
+    client = openai.OpenAI(api_key=OPENAI_API_KEY)
     prompt = (
-        "Extract structured time log data from the following text. "
-        "For each entry, output: Employee, Date (MM:DD:YYYY), Time (start-end), Description, Subtask (the most specific mapped subtask, e.g., '(ML) - EuP - April'25'). "
-        "If mapping is ambiguous, set Subtask to 'Ambiguous (requires verification)'. "
-        "Output a JSON array.\nText:\n" + text
+        "You are an expert assistant for extracting structured time log data from any text. "
+        "For each record in the input, extract the following fields: Employee (name), Description (task), Date (in DD.MM.YYYY), Start Time (in HH:MM, 24-hour), End Time (in HH:MM, 24-hour). "
+        "If a field is missing or cannot be determined, set its value to null. "
+        "Return the output as a JSON array, with one object per record. "
+        "\n\nHere are some examples of input and expected output:\n"
+        "Input: Employee 1: Markus Lange\n1 April, 2025\n9:00 – 12:00 → Frontend-Insider-Tool Abstimmung\n"
+        "Output: [\n  {\n    \"name\": \"Markus Lange\",\n    \"description\": \"Frontend-Insider-Tool Abstimmung\",\n    \"date\": \"01.04.2025\",\n    \"start_time\": \"09:00\",\n    \"end_time\": \"12:00\"\n  }\n]\n"
+        "Input: Hi my name is Markus and I worked on task X on April 2 from 9-5 pm\n"
+        "Output: [\n  {\n    \"name\": \"Markus\",\n    \"description\": \"task X\",\n    \"date\": \"02.04.2025\",\n    \"start_time\": \"09:00\",\n    \"end_time\": \"17:00\"\n  }\n]\n"
+        "Input: John did some work\n"
+        "Output: [\n  {\n    \"name\": \"John\",\n    \"description\": null,\n    \"date\": null,\n    \"start_time\": null,\n    \"end_time\": null\n  }\n]\n"
+        "Input: Markus worked on X from 10:00 to 12:00. Sarah worked on Y on 3 April, 2025 from 13:00 to 15:00.\n"
+        "Output: [\n  {\n    \"name\": \"Markus\",\n    \"description\": \"X\",\n    \"date\": null,\n    \"start_time\": \"10:00\",\n    \"end_time\": \"12:00\"\n  },\n  {\n    \"name\": \"Sarah\",\n    \"description\": \"Y\",\n    \"date\": \"03.04.2025\",\n    \"start_time\": \"13:00\",\n    \"end_time\": \"15:00\"\n  }\n]\n"
+        "\nInput: " + text + "\nOutput:"
     )
+    print("\n[DEBUG] OpenAI Prompt:\n", prompt)
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt},
-                      {"role": "system", "content": f"Project/task definitions: {json.dumps(PROJECTS_DATA)}"}],
+            messages=[
+                {"role": "user", "content": prompt},
+                {"role": "system", "content": f"Project/task definitions: {json.dumps(PROJECTS_DATA)}"}
+            ],
             temperature=0,
             max_tokens=2048,
         )
         content = response.choices[0].message.content
+        print("\n[DEBUG] OpenAI Raw Response:\n", content)
         match = re.search(r'\[.*\]', content, re.DOTALL)
         if match:
-            return json.loads(match.group(0))
-        return json.loads(content)
+            parsed = json.loads(match.group(0))
+            print("\n[DEBUG] OpenAI Parsed Output:\n", parsed)
+            return parsed
+        parsed = json.loads(content)
+        print("\n[DEBUG] OpenAI Parsed Output (no match):\n", parsed)
+        return parsed
     except Exception as e:
+        print("\n[DEBUG] OpenAI Exception:\n", e)
         raise RuntimeError(f"OpenAI LLM parsing failed: {e}")
 
 def call_gemini_llm(text: str) -> list:
@@ -197,17 +215,37 @@ def map_description_to_subtask(description):
             return project['name']
     return None
 
+def standardize_entry(entry):
+    return {
+        "Employee": entry.get("name") or entry.get("Employee") or "",
+        "Date": entry.get("date") or entry.get("Date") or "",
+        "Time": (
+            f"{entry.get('start_time', '')} - {entry.get('end_time', '')}"
+            if entry.get("start_time") and entry.get("end_time")
+            else entry.get("Time", "")
+        ),
+        "Description": entry.get("description") or entry.get("Description") or "",
+        "Subtask": entry.get("subtask") or entry.get("Subtask") or "",
+    }
+
 def parse_time_log(text: str, return_errors=False) -> list:
     """
     Tries OpenAI, then Gemini, then regex fallback. Returns list of dicts with required columns. If return_errors=True, returns (data, errors).
     """
+    print("\n[DEBUG] parse_time_log input:\n", text)
     errors = []
     try:
-        return call_openai_llm(text), errors if not return_errors else (call_openai_llm(text), errors)
+        result = call_openai_llm(text)
+        # Standardize OpenAI output fields for frontend
+        standardized = [standardize_entry(e) for e in result]
+        print("\n[DEBUG] parse_time_log OpenAI result (standardized):\n", standardized)
+        return (standardized, errors) if return_errors else standardized
     except Exception as e:
         errors.append(str(e))
     try:
-        return call_gemini_llm(text), errors if not return_errors else (call_gemini_llm(text), errors)
+        result = call_gemini_llm(text)
+        print("\n[DEBUG] parse_time_log Gemini result:\n", result)
+        return (result, errors) if return_errors else result
     except Exception as e:
         errors.append(str(e))
     try:
@@ -267,6 +305,7 @@ def parse_time_log(text: str, return_errors=False) -> list:
                     "Subtask": subtask or "Ambiguous (requires verification)"
                 }
                 entries.append(entry)
+        print("\n[DEBUG] parse_time_log Regex result:\n", entries)
         return (entries, errors) if return_errors else entries
     except Exception as e:
         errors.append(str(e))

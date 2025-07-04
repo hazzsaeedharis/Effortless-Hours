@@ -5,6 +5,9 @@ import pandas as pd
 import json
 import os
 from parser import parse_time_log
+#from models import WorkLog, Session
+from sqlalchemy.exc import SQLAlchemyError
+from typing import List
 
 # --- Configuration ---
 # API_KEY = "your-secret-api-key"  # In a real app, use environment variables

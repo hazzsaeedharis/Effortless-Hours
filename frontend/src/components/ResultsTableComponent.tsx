@@ -84,7 +84,8 @@ const ResultsTableComponent: React.FC<ResultsTableComponentProps> = ({ results, 
           </Button>
         </Box>
         <TableContainer component={Paper} sx={{ mt: 0, borderRadius: 6, boxShadow: 6, background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(12px)', maxHeight: 400, overflowY: 'auto' }}>
-          <Table sx={{ minWidth: 650 }} aria-label="results table">
+          
+          <Table sx={{ minWidth: 900 }} aria-label="results table">
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: 700, color: '#222', fontSize: 16 }}>Employee</TableCell>

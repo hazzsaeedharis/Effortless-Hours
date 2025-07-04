@@ -88,7 +88,15 @@ function App() {
         `${API_URL}/api/v1/parse-text`,
         { text, task_path: selectedTaskPath || [] },
       );
-      setResults(response.data.data);
+      // Map OpenAI output fields to frontend table fields
+      const mappedResults = (response.data.data || []).map((entry: any) => ({
+        Employee: entry.name || entry.Employee || '',
+        Date: entry.date || entry.Date || '',
+        Time: (entry.start_time && entry.end_time) ? `${entry.start_time} - ${entry.end_time}` : (entry.Time || ''),
+        Description: entry.description || entry.Description || '',
+        Subtask: entry.subtask || entry.Subtask || '',
+      }));
+      setResults(mappedResults);
       setActiveStep(3);
       showToast('Time log processed successfully!');
     } catch (err: any) {
