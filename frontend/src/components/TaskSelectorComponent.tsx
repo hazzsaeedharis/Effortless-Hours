@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Typography, List, ListItemButton, ListItemText, Paper } from '@mui/material';
+import React, { useState, useMemo } from 'react';
+import { Typography, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 interface Task {
   name: string;
@@ -8,45 +8,54 @@ interface Task {
 
 interface TaskSelectorComponentProps {
   tasks: Task[];
-  onSelect: (taskName: string) => void;
+  onSelect: (taskPath: string[]) => void;
+}
+
+// Helper to flatten all leaf tasks with their full path
+function getAllLeafPaths(tasks: Task[], path: string[] = []): string[][] {
+  let result: string[][] = [];
+  for (const task of tasks) {
+    const newPath = [...path, task.name];
+    if (!task.subtasks || task.subtasks.length === 0) {
+      result.push(newPath);
+    } else {
+      result = result.concat(getAllLeafPaths(task.subtasks, newPath));
+    }
+  }
+  return result;
 }
 
 const TaskSelectorComponent: React.FC<TaskSelectorComponentProps> = ({ tasks, onSelect }) => {
-  // Flatten all subtasks for selection
-  const allTaskNames: string[] = [];
-  tasks.forEach((task: Task) => {
-    if (task.name) allTaskNames.push(task.name);
-    if (task.subtasks) {
-      task.subtasks.forEach((sub1: Task) => {
-        if (sub1.name) allTaskNames.push(sub1.name);
-        if (sub1.subtasks) {
-          sub1.subtasks.forEach((sub2: Task) => {
-            if (sub2.name) allTaskNames.push(sub2.name);
-            if (sub2.subtasks) {
-              sub2.subtasks.forEach((sub3: Task) => {
-                if (sub3.name) allTaskNames.push(sub3.name);
-              });
-            }
-          });
-        }
-      });
-    }
-  });
-  // Remove duplicates
-  const uniqueTaskNames = Array.from(new Set(allTaskNames));
+  const leafPaths = useMemo(() => getAllLeafPaths(tasks), [tasks]);
+  const [selected, setSelected] = useState<string>('');
+
+  const handleChange = (event: any) => {
+    const value = event.target.value;
+    setSelected(value);
+    const pathArr = value.split(' > ');
+    onSelect(pathArr);
+  };
 
   return (
     <Paper elevation={2} sx={{ p: 3 }}>
       <Typography variant="h6" gutterBottom>
         Select a Task
       </Typography>
-      <List>
-        {uniqueTaskNames.map((taskName) => (
-          <ListItemButton key={taskName} onClick={() => onSelect(taskName)}>
-            <ListItemText primary={taskName} />
-          </ListItemButton>
-        ))}
-      </List>
+      <FormControl fullWidth>
+        <InputLabel id="task-select-label">Task</InputLabel>
+        <Select
+          labelId="task-select-label"
+          value={selected}
+          label="Task"
+          onChange={handleChange}
+        >
+          {leafPaths.map((pathArr, idx) => (
+            <MenuItem key={idx} value={pathArr.join(' > ')}>
+              {pathArr.join(' > ')}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </Paper>
   );
 };
