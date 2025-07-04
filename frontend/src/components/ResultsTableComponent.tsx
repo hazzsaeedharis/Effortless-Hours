@@ -83,7 +83,7 @@ const ResultsTableComponent: React.FC<ResultsTableComponentProps> = ({ results, 
             Export to CSV
           </Button>
         </Box>
-        <TableContainer component={Paper} sx={{ mt: 0, borderRadius: 6, boxShadow: 6, background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(12px)' }}>
+        <TableContainer component={Paper} sx={{ mt: 0, borderRadius: 6, boxShadow: 6, background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(12px)', maxHeight: 400, overflowY: 'auto' }}>
           <Table sx={{ minWidth: 650 }} aria-label="results table">
             <TableHead>
               <TableRow>

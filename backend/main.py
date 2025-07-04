@@ -55,11 +55,12 @@ def load_data():
 # --- Pydantic Models ---
 class ParseRequest(BaseModel):
     text: str
+    task_path: list[str] = []
 
 class ParseResponse(BaseModel):
-    # This will be defined in more detail later
     message: str
     data: list = []
+    errors: list = []
 
 # --- API Endpoints ---
 @app.get("/", tags=["General"])
@@ -76,15 +77,18 @@ async def parse_text_endpoint(request: ParseRequest):
         raise HTTPException(status_code=400, detail="Input text cannot be empty.")
 
     # --- Use the parsing engine ---
-    parsed_data = parse_time_log(request.text)
+    parsed_data, errors = parse_time_log(request.text, return_errors=True)
 
-    # --- Placeholder for Task Mapping Logic ---
-    # Here we would add the logic to map the description to a task from appendix2.json
-    # For now, we'll just return the raw parsed data.
+    # If task_path is provided, override Subtask for all entries
+    if request.task_path:
+        subtask = request.task_path[-1]
+        for entry in parsed_data:
+            entry['Subtask'] = subtask
 
     return {
         "message": "Text parsed successfully.",
-        "data": parsed_data
+        "data": parsed_data,
+        "errors": errors
     }
 
 # To run this app:

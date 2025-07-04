@@ -86,7 +86,7 @@ function App() {
     try {
       const response = await axios.post(
         `${API_URL}/api/v1/parse-text`,
-        { text, taskPath: selectedTaskPath ? selectedTaskPath.join(' > ') : '' },
+        { text, task_path: selectedTaskPath || [] },
       );
       setResults(response.data.data);
       setActiveStep(3);

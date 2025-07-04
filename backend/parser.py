@@ -197,21 +197,79 @@ def map_description_to_subtask(description):
             return project['name']
     return None
 
-def parse_time_log(text: str) -> list:
+def parse_time_log(text: str, return_errors=False) -> list:
     """
-    Tries OpenAI, then Gemini, then regex fallback. Returns list of dicts with required columns.
+    Tries OpenAI, then Gemini, then regex fallback. Returns list of dicts with required columns. If return_errors=True, returns (data, errors).
     """
     errors = []
     try:
-        return call_openai_llm(text)
+        return call_openai_llm(text), errors if not return_errors else (call_openai_llm(text), errors)
     except Exception as e:
         errors.append(str(e))
     try:
-        return call_gemini_llm(text)
+        return call_gemini_llm(text), errors if not return_errors else (call_gemini_llm(text), errors)
     except Exception as e:
         errors.append(str(e))
     try:
-        return regex_fallback_parse(text)
+        # Regex fallback with strict validation and error aggregation
+        entries = []
+        current_employee = None
+        current_date = None
+        lines = text.split('\n')
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+            employee_match = re.match(r"employee \d+: (.+)", line, re.IGNORECASE)
+            if employee_match:
+                current_employee = employee_match.group(1).strip()
+                current_date = None
+                continue
+            date_match = re.match(
+                r"^((\d{1,2} \w+, \d{4})|(\d{1,2}/\d{1,2}/\d{2,4})|((?:Montag|Dienstag|Mittwoch|Donnerstag|Freitag), \d{1,2}\. \w+ \d{4})|(\d{4}-\d{2}-\d{2}))\s*$",
+                line
+            )
+            if date_match:
+                raw_date = next((g for g in date_match.groups() if g is not None), None)
+                try:
+                    current_date = validate_and_format_date(raw_date)
+                except Exception as e:
+                    errors.append(f"Invalid date '{raw_date}': {e}")
+                    current_date = None
+                continue
+            log_match = re.match(
+                r"^\s*(\d{1,2}:\d{2}|\d{1,2})\s*[–-]\s*(\d{1,2}:\d{2}|\d{1,2})\s*(?:→|->|–|-)?\s*(.+)$",
+                line
+            )
+            if not log_match:
+                log_match = re.match(
+                    r"^\s*(\d{1,2}:?\d{0,2})\s*[–-]\s*(\d{1,2}:?\d{0,2})\s+(.+)$",
+                    line
+                )
+            if log_match and current_employee and current_date:
+                start_time, end_time, description = log_match.groups()
+                try:
+                    start_time_fmt = validate_time(start_time.strip())
+                except Exception as e:
+                    errors.append(f"Invalid start time '{start_time}': {e}")
+                    start_time_fmt = start_time.strip()
+                try:
+                    end_time_fmt = validate_time(end_time.strip())
+                except Exception as e:
+                    errors.append(f"Invalid end time '{end_time}': {e}")
+                    end_time_fmt = end_time.strip()
+                subtask = map_description_to_subtask(description)
+                entry = {
+                    "Employee": current_employee,
+                    "Date": current_date,
+                    "Time": f"{start_time_fmt}-{end_time_fmt}",
+                    "Description": description.strip(),
+                    "Subtask": subtask or "Ambiguous (requires verification)"
+                }
+                entries.append(entry)
+        return (entries, errors) if return_errors else entries
     except Exception as e:
         errors.append(str(e))
+    if return_errors:
+        return [], errors
     raise RuntimeError("All parsing methods failed: " + "; ".join(errors))
